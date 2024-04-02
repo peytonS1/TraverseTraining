@@ -1,7 +1,7 @@
 <?php
 //Set database account details
 $host = 'localhost';
-$dbname = 'tcd';
+$dbname = 'traininglog';
 $username = 'root';
 $password = '';
 
@@ -36,5 +36,6 @@ try{
         <a href = "Bidding.php" class = "btn btn-info" role = "button">Bidding</a>
 
     </nav> 
+    
 </body>
 </html>
