@@ -1,13 +1,18 @@
 
 <?php
-$server = "localhost"; 
+$servername = "localhost"; 
 $username = "root"; 
 $password = "";
-$dbname = "traininglog";
+$database = "traininglog";
+  
+
+$showAlert = false; 
+$showError = false; 
+$exists=false;
 
     //Connect to database using PDO
     try{
-        $db = new PDO("mysql:host=$server;dbname=$dbname", $username, $password);
+        $db = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
         $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     } catch (PDOException $e){
         echo "Connection failed: " . $e->getMessage();
