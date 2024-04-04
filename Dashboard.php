@@ -1,17 +1,6 @@
 <?php
-//Set database account details
-$host = 'localhost';
-$dbname = 'traininglog';
-$username = 'root';
-$password = '';
-
-//Connect to database using PDO
-try{
-    $db = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
-    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e){
-    echo "Connection failed: " . $e->getMessage();
-}
+// Include your database connection
+require 'db.php';
 ?>
 
 <!DOCTYPE html>
@@ -28,14 +17,12 @@ try{
 
     </style>
 </head>
-<body style = background-color:White>
+<body style="background-color:White">
     <h2 class="centerTop">TRAVERSE</h2>
-    <nav class = "leftCenter">
-        <a href = "Certification.php" class = "btn btn-info" role = "button">Certification</a>
-        <a href = "TrainingLog.php" class = "btn btn-info" role = "button">Training Log</a>
-        <a href = "Bidding.php" class = "btn btn-info" role = "button">Bidding</a>
-
+    <nav class="leftCenter">
+        <a href="Certification.php" class="btn btn-info" role="button">Certification</a>
+        <a href="TrainingLog.php" class="btn btn-info" role="button">Training Log</a>
+        <a href="Bidding.php" class="btn btn-info" role="button">Bidding</a>
     </nav> 
-    
 </body>
 </html>

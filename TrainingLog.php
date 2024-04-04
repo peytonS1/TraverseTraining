@@ -1,17 +1,6 @@
 <?php
-//Set database account details
-$host = 'localhost';
-$dbname = 'traininglog';
-$username = 'root';
-$password = '';
-
-//Connect to database using PDO
-try{
-    $db = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
-    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e){
-    echo "Connection failed: " . $e->getMessage();
-}
+// Include the database connection
+require 'db.php';
 ?>
 
 <!DOCTYPE html>

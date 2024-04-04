@@ -1,16 +1,11 @@
 
 <?php
-$servername = "localhost"; 
-$username = "root"; 
-$password = "";
-$database = "traininglog";
-  
-// Create a connection 
-$conn = mysqli_connect($servername, $username, $password, $database);
+// Include the database connection
+require 'db.php';
 
 $showAlert = false; 
-$showError = false; 
-$exists=false;
+$showError = false;
+$exists = false;
 
     // Check if the form is submitted
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
