@@ -1,16 +1,17 @@
 
 <?php
-$servername = "localhost"; 
+$server = "localhost"; 
 $username = "root"; 
 $password = "";
-$database = "traininglog";
-  
-// Create a connection 
-$conn = mysqli_connect($servername, $username, $password, $database);
+$dbname = "traininglog";
 
-$showAlert = false; 
-$showError = false; 
-$exists=false;
+    //Connect to database using PDO
+    try{
+        $db = new PDO("mysql:host=$server;dbname=$dbname", $username, $password);
+        $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    } catch (PDOException $e){
+        echo "Connection failed: " . $e->getMessage();
+    }
 
     // Check if the form is submitted
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
