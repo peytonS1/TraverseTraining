@@ -10,34 +10,6 @@ $showAlert = false;
 $showError = false; 
 $exists=false;
 
-    //Connect to database using PDO
-    try{
-        $db = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
-        $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    } catch (PDOException $e){
-        echo "Connection failed: " . $e->getMessage();
-    }
-
-    // Check if the form is submitted
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        // Prepare SQL statement to insert data into the certification table
-        $sql = "INSERT INTO certification (robotclass, partmodel, endefector, progress, certstatus) VALUES (?, ?, ?, ?, ?)";
-        $stmt = $db->prepare($sql);
-
-        // Bind parameters with form values
-        $stmt->bindParam(1, $_POST['robot_class']);
-        $stmt->bindParam(2, $_POST['part_model']);
-        $stmt->bindParam(3, $_POST['end_effector']);
-        $stmt->bindParam(4, $_POST['progress']);
-        $stmt->bindParam(5, $_POST['cert_status']);
-
-        // Execute the prepared statement
-        if ($stmt->execute()) {
-            echo "Data uploaded to the database successfully!";
-        } else {
-            echo "Error uploading data to the database.";
-        }
-    }
 ?>
 
 
