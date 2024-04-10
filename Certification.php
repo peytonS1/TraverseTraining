@@ -29,8 +29,6 @@ $exists = false;
     }
 ?>
 
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -71,7 +69,7 @@ $exists = false;
                         <input type="range" name="progress[]" min="0" max="100" value="50" oninput="updateProgressValue(this)">
                         <span class="progress_value">50%</span>
                     </td>
-                    <td><input type="text" name="cert_status[]" value="Certified"></td>
+                    <td><input type="text" name="cert_status[]" value="In Progress"></td>
                 </tr>
                 <!-- Additional rows will be dynamically added here -->
             </tbody>
@@ -94,7 +92,7 @@ $exists = false;
             <tbody>
                 <tr>
                     <td>
-                        <select name="part_modelArm[]">
+                        <select name="part_modelArm[]" onchange="populateEndEffectorDropdown(this)">
                             <!-- Options will be dynamically populated based on selection -->
                             <option value="Canova Arm 001">Canova Arm 001</option>
                             <option value="Canova Arm 002">Canova Arm 002</option>
@@ -112,7 +110,7 @@ $exists = false;
                         <input type="range" name="progress[]" min="0" max="100" value="50" oninput="updateProgressValue(this)">
                         <span class="progress_value">50%</span>
                     </td>
-                    <td><input type="text" name="cert_status[]" value="Certified"></td>
+                    <td><input type="text" name="cert_status[]" value="In Progress"></td>
                 </tr>
                 <!-- Additional rows will be dynamically added here -->
             </tbody>
@@ -147,7 +145,7 @@ $exists = false;
                         <input type="range" name="progress[]" min="0" max="100" value="50" oninput="updateProgressValue(this)">
                         <span class="progress_value">50%</span>
                     </td>
-                    <td><input type="text" name="cert_status[]" value="Certified"></td>
+                    <td><input type="text" name="cert_status[]" value="In Progress"></td>
                 </tr>
                 <!-- Additional rows will be dynamically added here -->
             </tbody>
@@ -224,8 +222,7 @@ $exists = false;
 
     // Bind the updateProgressValue function to existing progress sliders
     var existingSliders = document.querySelectorAll('input[type="range"]');
-    existingSliders.forEach(function(slider) {
-        updateProgressValue(slider);
+    existingSliders.forEach(function(slider) {updateProgressValue(slider);
     });
 
         // Function to update the progress value display
@@ -233,41 +230,41 @@ $exists = false;
         var progressValueSpan = slider.parentNode.querySelector('.progress_value');
         progressValueSpan.innerHTML = slider.value + '%';
     }
-
-    // Function to populate the End Effector dropdown based on the selected Part Model for Robotic Arm
-    function populateEndEffectorDropdownArm(select) {
-        var endEffectorDropdown = select.parentNode.nextElementSibling.nextElementSibling.querySelector('select[name=end_effectorArm[]]');
+    // Function to populate the End Effector dropdown based on selected Part Model
+    function populateEndEffectorDropdown(select) {
+        var endEffectorDropdown = select.parentNode.nextElementSibling.querySelector('select[name=end_effector[]]');
         endEffectorDropdown.innerHTML = ''; // Clear existing options
-        var partModelArm = select.value;
-        var endEffectorOptionsArm = [];
-        switch (partModelArm) {
+        var partModel = select.value;
+        var endEffectorOptions = [];
+        switch (partModel) {
             case 'Canova Arm 001':
-                endEffectorOptionsArm = ['Arm End Effector 001', 'Arm End Effector 002', 'Arm End Effector 003', 'Arm End Effector 004', 'Arm End Effector 005'];
+                endEffectorOptions = ['Arm End Effector 001', 'Arm End Effector 002', 'Arm End Effector 003', 'Arm End Effector 004', 'Arm End Effector 005'];
                 break;
             case 'Canova Arm 002':
-                endEffectorOptionsArm = ['Arm End Effector 001', 'Arm End Effector 002', 'Arm End Effector 003', 'Arm End Effector 004', 'Arm End Effector 005'];
+                endEffectorOptions = ['Arm End Effector 001', 'Arm End Effector 002', 'Arm End Effector 003', 'Arm End Effector 004', 'Arm End Effector 005'];
                 break;
             case 'Canova Arm 003':
-                endEffectorOptionsArm = ['Arm End Effector 001', 'Arm End Effector 002', 'Arm End Effector 003', 'Arm End Effector 004', 'Arm End Effector 005'];
+                endEffectorOptions = ['Arm End Effector 001', 'Arm End Effector 002', 'Arm End Effector 003', 'Arm End Effector 004', 'Arm End Effector 005'];
                 break;
             case 'Canova Arm 004':
-                endEffectorOptionsArm = ['Arm End Effector 001', 'Arm End Effector 002', 'Arm End Effector 003', 'Arm End Effector 004', 'Arm End Effector 005'];
+                endEffectorOptions = ['Arm End Effector 001', 'Arm End Effector 002', 'Arm End Effector 003', 'Arm End Effector 004', 'Arm End Effector 005'];
                 break;
             case 'Canova Arm 005':
-                endEffectorOptionsArm = ['Arm End Effector 001', 'Arm End Effector 002', 'Arm End Effector 003', 'Arm End Effector 004', 'Arm End Effector 005'];
+                endEffectorOptions = ['Arm End Effector 001', 'Arm End Effector 002', 'Arm End Effector 003', 'Arm End Effector 004', 'Arm End Effector 005'];
                 break;
             // Add cases for other Part Models as needed
             default:
-                endEffectorOptionsArm = [];
+                endEffectorOptions = [];
                 break;
         }
-        endEffectorOptionsArm.forEach(function(option) {
+        endEffectorOptions.forEach(function(option) {
             var optionElem = document.createElement('option');
             optionElem.value = option;
             optionElem.textContent = option;
             endEffectorDropdown.appendChild(optionElem);
         });
     }
+
 </script>
 </body>
 </html>
