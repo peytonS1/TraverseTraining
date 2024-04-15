@@ -257,14 +257,7 @@ $exists = false;
                 endEffectorOptions = [];
                 break;
         }
-        endEffectorOptions.forEach(function(option) {
-            var optionElem = document.createElement('option');
-            optionElem.value = option;
-            optionElem.textContent = option;
-            endEffectorDropdown.appendChild(optionElem);
-        });
     }
-
 </script>
 </body>
 </html>
