@@ -1,6 +1,21 @@
 <?php
 // Include the database connection
 require 'db.php';
+
+// Check if form is submitted
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Check if the selected user is set and not empty
+    if (isset($_POST['selected_user']) && !empty($_POST['selected_user'])) {
+        // Sanitize the input to prevent SQL injection
+        $selected_user = mysqli_real_escape_string($connection, $_POST['selected_user']);
+        
+        // Store the selected user in a session variable to use it in dashboard.php
+        $_SESSION['selected_user'] = $selected_user;
+    }
+}
+
+// Check if an admin is selected
+$is_admin = isset($_SESSION['selected_user']) && $_SESSION['selected_user'] == 'Administrator';
 ?>
 
 <!DOCTYPE html>
@@ -10,57 +25,77 @@ require 'db.php';
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Training Log</title>
+    <title>Dashboard</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <style>
 
     </style>
 </head>
-<body style = background-color:White>
-    <h2 class="centerTop">Training Log</h2>
-    <form method="post" action="process_form.php">
-    <label for="last_name">Last Name:</label>
-    <input type="text" id="last_name" name="last_name" required><br>
+<body style="background-color:White">
+    <h2 class="centerTop">Dashboard</h2>
+    
+    <?php if ($is_admin): ?>
+    <!-- Search function for selecting a user -->
+    <form method="post" action="dashboard.php">
+        <select name="selected_user">
+            <option value="" selected disabled>Select a user</option>
+            <!-- Fetch users from the database and populate the dropdown -->
+            <?php
+            $query = "SELECT * FROM users";
+            $result = mysqli_query($connection, $query);
+            while ($row = mysqli_fetch_assoc($result)) {
+                echo "<option value='" . $row['username'] . "'>" . $row['username'] . "</option>";
+            }
+            ?>
+        </select>
+        <input type="submit" value="Select User">
+    </form>
+    <?php endif; ?>
 
-    <label for="first_name">First Name:</label>
-    <input type="text" id="first_name" name="first_name" required><br>
+    <!-- Display user's certification information -->
+    <?php if ($is_admin): ?>
+        <!-- Editable table for administrator -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Certification Type</th>
+                    <th>Progress</th>
+                    <th>Description</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Fetch and display certification information for the selected user -->
+                <?php
+                // Fetch certification information from the database for the selected user
+                // Display information in table rows
+                ?>
+            </tbody>
+        </table>
+    <?php else: ?>
+        <!-- Uneditable table for normal users -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Certification Type</th>
+                    <th>Progress</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Fetch and display certification information for the selected user -->
+                <?php
+                // Fetch certification information from the database for the selected user
+                // Display information in table rows
+                ?>
+            </tbody>
+        </table>
+    <?php endif; ?>
 
-    <label for="address">Address:</label>
-    <input type="text" id="address" name="address" required><br>
-
-    <label for="city">City:</label>
-    <input type="text" id="city" name="city" required><br>
-
-    <label for="state">State:</label>
-    <input type="text" id="state" name="state" required><br>
-
-    <label for="country">Country/Region/Province:</label>
-    <input type="text" id="country" name="country" required><br>
-
-    <label for="email">Email:</label>
-    <input type="email" id="email" name="email" required><br>
-
-    <label for="phone">Mobile Phone:</label>
-    <input type="tel" id="phone" name="phone" required><br>
-
-    <label for="other_contact">Other Contact Info:</label>
-    <input type="text" id="other_contact" name="other_contact"><br>
-
-    <label for="date">Date:</label>
-    <input type="date" id="date" name="date" required><br>
-
-    <label for="notes">Notes:</label>
-    <textarea id="notes" name="notes"></textarea><br>
-
-    <label for="status">Status:</label>
-    <select id="status" name="status" required>
-        <option value="pending">Pending</option>
-        <option value="completed">Completed</option>
-        <option value="in_progress">In Progress</option>
-    </select><br>
-
-    <input type="submit" value="Submit">
-</form>
+    <!-- Button to go to Certification.php page to edit user's certification info -->
+    <?php if ($is_admin): ?>
+        <button onclick="window.location.href='Certification.php'">Edit Certification Info</button>
+    <?php endif; ?>
 </body>
 </html>
