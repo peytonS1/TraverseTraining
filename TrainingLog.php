@@ -7,7 +7,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Check if the selected user is set and not empty
     if (isset($_POST['selected_user']) && !empty($_POST['selected_user'])) {
         // Sanitize the input to prevent SQL injection
-        $selected_user = mysqli_real_escape_string($connection, $_POST['selected_user']);
+        $selected_user = mysqli_real_escape_string($conn, $_POST['selected_user']);
         
         // Store the selected user in a session variable to use it in dashboard.php
         $_SESSION['selected_user'] = $selected_user;
@@ -15,7 +15,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 // Check if an admin is selected
-$is_admin = isset($_SESSION['selected_user']) && $_SESSION['selected_user'] == 'Administrator';
+$is_admin = isset($_SESSION['selected_user']) && $_SESSION['selected_user'] == 'Admin';
 ?>
 
 <!DOCTYPE html>
@@ -42,10 +42,10 @@ $is_admin = isset($_SESSION['selected_user']) && $_SESSION['selected_user'] == '
             <option value="" selected disabled>Select a user</option>
             <!-- Fetch users from the database and populate the dropdown -->
             <?php
-            $query = "SELECT * FROM users";
-            $result = mysqli_query($connection, $query);
+            $query = "SELECT * FROM userprofile";
+            $result = mysqli_query($conn, $query);
             while ($row = mysqli_fetch_assoc($result)) {
-                echo "<option value='" . $row['username'] . "'>" . $row['username'] . "</option>";
+                echo "<option value='" . $row['userprofileid'] . "'>" . $row['lastname'] . "</option>";
             }
             ?>
         </select>

@@ -1,4 +1,21 @@
 <?php
+$servername = "localhost"; 
+$username = "root"; 
+$password = "";
+$database = "traininglog";
+  
+// Create a connection 
+$conn = mysqli_connect($servername, $username, $password, $database);
+
+// Check if the connection was successful
+if (!$conn) {
+    // Generate JavaScript code for an error alert
+    echo "<script>alert('Failed to connect to the database.');</script>";
+} else {
+    // Generate JavaScript code for a success alert
+    echo "<script>alert('Database connection successful.');</script>";
+}
+
 // Include your database connection
 require 'db.php';
 
@@ -7,7 +24,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Check if the user selection is set and not empty
     if (isset($_POST['user_selection']) && !empty($_POST['user_selection'])) {
         // Sanitize the input to prevent SQL injection
-        $user_selection = mysqli_real_escape_string($connection, $_POST['user_selection']);
+        $user_selection = mysqli_real_escape_string($conn, $_POST['user_selection']);
         
         // Store the user selection in a session variable
         $_SESSION['user_selection'] = $user_selection;
@@ -38,10 +55,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <option value="" selected disabled>Select an option</option>
                 <?php
                 // Query to fetch user options from database
-                $query = "SELECT * FROM your_table_name";
-                $result = mysqli_query($connection, $query);
+                $query = "SELECT userprofileid, lastname FROM userprofile";
+                $result = mysqli_query($conn, $query);
                 while ($row = mysqli_fetch_assoc($result)) {
-                    echo "<option value='" . $row['option_value'] . "'>" . $row['option_name'] . "</option>";
+                    echo "<option value='" . $row['userprofileid'] . "'>" . $row['lastname'] . "</option>";
                 }
                 ?>
             </select>
