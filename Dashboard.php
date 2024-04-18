@@ -1,22 +1,4 @@
 <?php
-$servername = "localhost"; 
-$username = "root"; 
-$password = "";
-$database = "traininglog";
-  
-// Create a connection 
-$conn = mysqli_connect($servername, $username, $password, $database);
-
-// Check if the connection was successful
-/*if (!$conn) {
-    // Generate JavaScript code for an error alert
-    echo "<script>alert('Failed to connect to the database.');</script>";
-} else {
-    // Generate JavaScript code for a success alert
-    echo "<script>alert('Database connection successful.');</script>";
-}*/
-
-// Include your database connection
 require 'db.php';
 
 
