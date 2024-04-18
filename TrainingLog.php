@@ -1,4 +1,11 @@
 <?php
+$servername = "localhost"; 
+$username = "root"; 
+$password = "";
+$database = "traininglog";
+  
+// Create a connection 
+$conn = mysqli_connect($servername, $username, $password, $database);
 // Include the database connection
 require 'db.php';
 
@@ -10,13 +17,38 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $selected_user = mysqli_real_escape_string($conn, $_POST['selected_user']);
         
         // Store the selected user in a session variable to use it in dashboard.php
+        session_start(); // Start the session
         $_SESSION['selected_user'] = $selected_user;
+
+                // Check if the selected user is the admin
+                if ($selected_user == '00001') {
+                    // Generate JavaScript code for a popup alert
+                    echo "<script>alert('You are logged in as an admin.');</script>";
+                } else {
+                    // Display a success message for the selected user
+                    echo "<p>User $selected_user selected successfully!</p>";
+                }
     }
 }
 
 // Check if an admin is selected
-$is_admin = isset($_SESSION['selected_user']) && $_SESSION['selected_user'] == 'Admin';
+$is_admin = isset($_SESSION['selected_user']) && $_SESSION['selected_user'] == '00001';
 ?>
+<!-- Search function for selecting a user -->
+<form method="post">
+        <select name="selected_user">
+            <option value="" selected disabled>Select a user</option>
+            <!-- Fetch users from the database and populate the dropdown -->
+            <?php
+            $query = "SELECT * FROM userprofile";
+            $result = mysqli_query($conn, $query);
+            while ($row = mysqli_fetch_assoc($result)) {
+                echo "<option value='" . $row['userprofileid'] . "'>" . $row['lastname'] . "</option>";
+            }
+            ?>
+        </select>
+        <input type="submit" value="Select User">
+    </form>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -34,24 +66,6 @@ $is_admin = isset($_SESSION['selected_user']) && $_SESSION['selected_user'] == '
 </head>
 <body style="background-color:White">
     <h2 class="centerTop">Dashboard</h2>
-    
-    <?php if ($is_admin): ?>
-    <!-- Search function for selecting a user -->
-    <form method="post" action="dashboard.php">
-        <select name="selected_user">
-            <option value="" selected disabled>Select a user</option>
-            <!-- Fetch users from the database and populate the dropdown -->
-            <?php
-            $query = "SELECT * FROM userprofile";
-            $result = mysqli_query($conn, $query);
-            while ($row = mysqli_fetch_assoc($result)) {
-                echo "<option value='" . $row['userprofileid'] . "'>" . $row['lastname'] . "</option>";
-            }
-            ?>
-        </select>
-        <input type="submit" value="Select User">
-    </form>
-    <?php endif; ?>
 
     <!-- Display user's certification information -->
     <?php if ($is_admin): ?>

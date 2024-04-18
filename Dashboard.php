@@ -8,17 +8,19 @@ $database = "traininglog";
 $conn = mysqli_connect($servername, $username, $password, $database);
 
 // Check if the connection was successful
-if (!$conn) {
+/*if (!$conn) {
     // Generate JavaScript code for an error alert
     echo "<script>alert('Failed to connect to the database.');</script>";
 } else {
     // Generate JavaScript code for a success alert
     echo "<script>alert('Database connection successful.');</script>";
-}
+}*/
 
 // Include your database connection
 require 'db.php';
 
+
+$successMessage = "";
 // Check if form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Check if the user selection is set and not empty
@@ -27,7 +29,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $user_selection = mysqli_real_escape_string($conn, $_POST['user_selection']);
         
         // Store the user selection in a session variable
+        session_start(); // Start the session
         $_SESSION['user_selection'] = $user_selection;
+
+        // Set the success message
+        $successMessage = "User selection saved successfully!";
     }
 }
 ?>
@@ -57,8 +63,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 // Query to fetch user options from database
                 $query = "SELECT userprofileid, lastname FROM userprofile";
                 $result = mysqli_query($conn, $query);
-                while ($row = mysqli_fetch_assoc($result)) {
-                    echo "<option value='" . $row['userprofileid'] . "'>" . $row['lastname'] . "</option>";
+                if ($result && mysqli_num_rows($result) > 0) {
+                    while ($row = mysqli_fetch_assoc($result)) {
+                        echo "<option value='" . $row['userprofileid'] . "'>" . $row['lastname'] . "</option>";
+                    }
+                } else {
+                    echo "<option value=''>No users found</option>";
                 }
                 ?>
             </select>
@@ -67,6 +77,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <a href="Certification.php" class="btn btn-info" role="button">Certification</a>
         <a href="TrainingLog.php" class="btn btn-info" role="button">Training Log</a>
         <a href="Bidding.php" class="btn btn-info" role="button">Bidding</a>
+        <!-- Display the success message if set -->
+        <?php if (!empty($successMessage)): ?>
+            <p class="success-message"><?php echo $successMessage; ?></p>
+        <?php endif; ?>
     </nav> 
 </body>
 </html>
