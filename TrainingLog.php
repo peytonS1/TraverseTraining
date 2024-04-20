@@ -8,7 +8,6 @@ if(isset($_POST['selected_user'])) {
 }
 
 $logged_in_user_id = isset($_SESSION['selected_user']) ? $_SESSION['selected_user'] : null;
-
 // Search function to fetch users by last name
 if(isset($_POST['search'])) {
     $search = mysqli_real_escape_string($conn, $_POST['search']);
@@ -132,7 +131,7 @@ if(isset($_POST['search'])) {
 
     <!-- Button to go to Certification.php page to edit user's certification info -->
     <?php if ($is_admin): ?>
-        <button onclick="window.location.href='Certification.php'">Edit Certification Info</button>
+        <button onclick="window.location.href='certification.php?user_id=<?php echo $logged_in_user_id; ?>'">Edit Certification Info</button>
     <?php endif; ?>
 
     <script>
