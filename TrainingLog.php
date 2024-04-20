@@ -7,6 +7,8 @@ if(isset($_POST['selected_user'])) {
     $selected_user = $_POST['selected_user'];
 }
 
+$logged_in_user_id = isset($_SESSION['selected_user']) ? $_SESSION['selected_user'] : null;
+
 // Search function to fetch users by last name
 if(isset($_POST['search'])) {
     $search = mysqli_real_escape_string($conn, $_POST['search']);
@@ -70,7 +72,7 @@ if(isset($_POST['search'])) {
 
     <!-- Display user's certification information -->
     <?php if ($is_admin && isset($selected_user)): ?>
-        <!-- Editable table for administrator -->
+        <!-- Table for administrator -->
         <table id="adminTable" style="display: none;">
             <thead>
                 <tr>
@@ -98,12 +100,13 @@ if(isset($_POST['search'])) {
         </table>
     <?php else: ?>
         <!-- Uneditable table for normal users -->
-        <table>
+        <table id="certificationTable">
             <thead>
                 <tr>
                     <th>Certification Type</th>
                     <th>Progress</th>
                     <th>Description</th>
+                    <th>Certification Status</th>
                 </tr>
             </thead>
             <tbody>
@@ -111,6 +114,17 @@ if(isset($_POST['search'])) {
                 <?php
                 // Fetch certification information from the database for the selected user
                 // Display information in table rows
+                $query = "SELECT * FROM certification WHERE userprofileid = $logged_in_user_id";
+                $result = mysqli_query($conn, $query);
+                while ($row = mysqli_fetch_assoc($result)) {
+                    echo "<tr>";
+                    echo "<td>" . $row['robotclass'] . "</td>";
+                    echo "<td>" . $row['progress'] . "</td>";
+                    echo "<td>" . $row['description'] . "</td>";
+                    echo "<td>" . $row['certstatus'] . "</td>";
+                    echo "</tr>";
+                }
+
                 ?>
             </tbody>
         </table>
@@ -174,6 +188,35 @@ if(isset($_POST['search'])) {
             });
         });
 
+    });
+
+    $(document).ready(function(){
+        // Function to populate the admin table with user data
+        function populateUserTable(userId) {
+            $.ajax({
+                url: 'fetch_user_data.php', // Update with your PHP script to fetch user data
+                method: 'POST',
+                data: { user_id: userId },
+                dataType: 'json',
+                success: function(response) {
+                    // Clear existing table rows
+                    $('#certificationTable tbody').empty();
+                    // Populate table with user data
+                    response.forEach(function(cert) {
+                        $('#certificationTable tbody').append(
+                            '<tr>' +
+                            '<td>' + cert.robotclass + '</td>' +
+                            '<td>' + cert.progress + '</td>' +
+                            '<td>' + cert.description + '</td>' +
+                            '<td>' + cert.certstatus + '</td>' +
+                            '</tr>'
+                        );
+                    });
+                    // Show the admin table
+                    $('#certificationTable').show();
+                }
+            });
+        }
     });
     </script>
 </body>
