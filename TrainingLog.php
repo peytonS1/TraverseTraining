@@ -4,10 +4,11 @@ require 'db.php';
 
 // Check if a user is selected
 if(isset($_POST['selected_user'])) {
-    $selected_user = $_POST['selected_user'];
+    $_SESSION['selected_user'] = $_POST['selected_user']; // Save selected user's ID in session
 }
 
 $logged_in_user_id = isset($_SESSION['selected_user']) ? $_SESSION['selected_user'] : null;
+
 // Search function to fetch users by last name
 if(isset($_POST['search'])) {
     $search = mysqli_real_escape_string($conn, $_POST['search']);
@@ -51,8 +52,21 @@ if(isset($_POST['search'])) {
     background-color: yellow; /* Change the color as needed */
     cursor: pointer;
 }
+/* Add CSS for table borders */
+table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #007bff;
+            color: #fff;
+        }
 </style>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -131,7 +145,7 @@ if(isset($_POST['search'])) {
 
     <!-- Button to go to Certification.php page to edit user's certification info -->
     <?php if ($is_admin): ?>
-        <button onclick="window.location.href='certification.php?user_id=<?php echo $logged_in_user_id; ?>'">Edit Certification Info</button>
+        <button onclick="window.location.href='certification.php?user_id=<?php echo $selected_user; ?>'">Edit Certification Info</button>
     <?php endif; ?>
 
     <script>
@@ -190,7 +204,7 @@ if(isset($_POST['search'])) {
     });
 
     $(document).ready(function(){
-        // Function to populate the admin table with user data
+        // Function to populate the user table with user data
         function populateUserTable(userId) {
             $.ajax({
                 url: 'fetch_user_data.php', // Update with your PHP script to fetch user data
@@ -211,7 +225,7 @@ if(isset($_POST['search'])) {
                             '</tr>'
                         );
                     });
-                    // Show the admin table
+                    // Show the user table
                     $('#certificationTable').show();
                 }
             });

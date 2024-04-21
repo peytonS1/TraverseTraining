@@ -19,6 +19,7 @@ $exists = false;
         $stmt->bindParam(3, $_POST['end_effector']);
         $stmt->bindParam(4, $_POST['progress']);
         $stmt->bindParam(5, $_POST['cert_status']);
+        
 
         // Execute the prepared statement
         if ($stmt->execute()) {
@@ -39,6 +40,58 @@ $exists = false;
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css"></script>
 </head>
+<style>
+        body {
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        h3 {
+            margin-top: 30px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #dee2e6;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        select {
+            width: 100%;
+            padding: 6px 12px;
+            border-radius: 4px;
+            border: 1px solid #ced4da;
+        }
+
+        input[type="range"] {
+            width: calc(100% - 50px);
+            margin-right: 10px;
+        }
+
+        .progress_value {
+            font-weight: bold;
+        }
+
+        .btn {
+            margin-top: 20px;
+        }
+    </style>
 <body style = background-color:White>
     <h2 class="centerTop">Certification</h2>
     <form method="post" action="process_form.php">
@@ -84,7 +137,6 @@ $exists = false;
             <thead>
                 <tr>
                     <th>Part Model</th>
-                    <th>End Effector</th>
                     <th>Progress</th>
                     <th>Certification Status</th>
                 </tr>
@@ -99,11 +151,6 @@ $exists = false;
                             <option value="Canova Arm 003">Canova Arm 003</option>
                             <option value="Canova Arm 004">Canova Arm 004</option>
                             <option value="Canova Arm 005">Canova Arm 005</option>
-                        </select>
-                    </td>
-                    <td>
-                        <select name="end_effector[]">
-                            <!-- Options will be dynamically populated based on selection -->
                         </select>
                     </td>
                     <td>
@@ -152,6 +199,40 @@ $exists = false;
         </table>
     </form>
     <button type="button" id="add_row3">Add Row</button>
+</form>
+
+<!-- VR Table -->
+<h3>End Effector</h3>
+    <form method="post" action="process_form.php">
+        <table id="effector_table">
+            <thead>
+                <tr>
+                    <th>Part Model</th>
+                    <th>Progress</th>
+                    <th>Certification Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <select name="part_modelendeffector[]">
+                            <!-- Options will be dynamically populated based on selection -->
+                            <option value="Claw">Claw</option>
+                            <option value="Cutter">Cutter</option>
+                            <option value="Hand">Hand</option>
+                        </select>
+                    </td>
+                    <td>
+                        <input type="range" name="progress[]" min="0" max="100" value="50" oninput="updateProgressValue(this)">
+                        <span class="progress_value">50%</span>
+                    </td>
+                    <td><input type="text" name="cert_status[]" value="In Progress"></td>
+                </tr>
+                <!-- Additional rows will be dynamically added here -->
+            </tbody>
+        </table>
+    </form>
+    <button type="button" id="add_row4">Add Row</button>
     <button type="submit" class="submit">Submit</button>
 </form>
 
@@ -194,7 +275,6 @@ $exists = false;
             <option value="Canova Arm 004">Canova Arm 004</option>
             <option value="Canova Arm 005">Canova Arm 005</option>
             </select>`;
-        cell2.innerHTML = '<select name="end_effector[]"></select>';
         cell3.innerHTML = '<input type="range" name="progress[]" min="0" max="100" value="0" oninput="updateProgressValue(this)"><span class="progress_value">0%</span>';
         cell4.innerHTML = '<input type="text" name="cert_status[]" value="">';
     });
@@ -220,6 +300,25 @@ $exists = false;
         cell3.innerHTML = '<input type="text" name="cert_status[]" value="">';
     });
 
+    // Event listener for Add Row button click to dynamically add rows
+    document.getElementById("add_row4").addEventListener("click", function() {
+        var table = document.getElementById("effector_table").getElementsByTagName('tbody')[0];
+        var newRow = table.insertRow(table.rows.length);
+        var cell1 = newRow.insertCell(0);
+        var cell2 = newRow.insertCell(1);
+        var cell3 = newRow.insertCell(2);
+
+        cell1.innerHTML = `
+            <select name="part_modelendeffector[]">
+            <!-- Options will be dynamically populated based on selection -->
+            <option value="Claw">Claw</option>
+            <option value="Cutter">Cutter</option>
+            <option value="Hand">Hand</option>
+            </select>`;
+        cell2.innerHTML = '<input type="range" name="progress[]" min="0" max="100" value="0" oninput="updateProgressValue(this)"><span class="progress_value">0%</span>';
+        cell3.innerHTML = '<input type="text" name="cert_status[]" value="">';
+    });
+
     // Bind the updateProgressValue function to existing progress sliders
     var existingSliders = document.querySelectorAll('input[type="range"]');
     existingSliders.forEach(function(slider) {updateProgressValue(slider);
@@ -229,34 +328,6 @@ $exists = false;
         function updateProgressValue(slider) {
         var progressValueSpan = slider.parentNode.querySelector('.progress_value');
         progressValueSpan.innerHTML = slider.value + '%';
-    }
-    // Function to populate the End Effector dropdown based on selected Part Model
-    function populateEndEffectorDropdown(select) {
-        var endEffectorDropdown = select.parentNode.nextElementSibling.querySelector('select[name=end_effector[]]');
-        endEffectorDropdown.innerHTML = ''; // Clear existing options
-        var partModel = select.value;
-        var endEffectorOptions = [];
-        switch (partModel) {
-            case 'Canova Arm 001':
-                endEffectorOptions = ['Arm End Effector 001', 'Arm End Effector 002', 'Arm End Effector 003', 'Arm End Effector 004', 'Arm End Effector 005'];
-                break;
-            case 'Canova Arm 002':
-                endEffectorOptions = ['Arm End Effector 001', 'Arm End Effector 002', 'Arm End Effector 003', 'Arm End Effector 004', 'Arm End Effector 005'];
-                break;
-            case 'Canova Arm 003':
-                endEffectorOptions = ['Arm End Effector 001', 'Arm End Effector 002', 'Arm End Effector 003', 'Arm End Effector 004', 'Arm End Effector 005'];
-                break;
-            case 'Canova Arm 004':
-                endEffectorOptions = ['Arm End Effector 001', 'Arm End Effector 002', 'Arm End Effector 003', 'Arm End Effector 004', 'Arm End Effector 005'];
-                break;
-            case 'Canova Arm 005':
-                endEffectorOptions = ['Arm End Effector 001', 'Arm End Effector 002', 'Arm End Effector 003', 'Arm End Effector 004', 'Arm End Effector 005'];
-                break;
-            // Add cases for other Part Models as needed
-            default:
-                endEffectorOptions = [];
-                break;
-        }
     }
 </script>
 </body>
