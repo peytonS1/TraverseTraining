@@ -47,11 +47,26 @@ if(isset($_POST['search'])) {
 <div id="searchResults"></div>
 
 <style>
-/* CSS for highlighting on hover */
-.user:hover {
-    background-color: yellow; /* Change the color as needed */
-    cursor: pointer;
-}
+    /* CSS for highlighting on hover */
+    /* CSS for Search Results */
+    #searchResults {
+        margin-top: 10px;
+        width: 200px; /* Adjust the width as needed */
+        height: 100px; /* Adjust the height as needed */
+        padding: 5px; /* Adjust the padding as needed */
+        margin: 1px; /* Adjust the margin as needed */
+     }
+    .user {
+        padding: 5px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin-bottom: 5px;
+        cursor: pointer;
+        background-color: #f9f9f9;
+    }
+    .user:hover {
+        background-color: yellow;
+    }
 /* Add CSS for table borders */
 table {
             border-collapse: collapse;
