@@ -7,28 +7,46 @@ $showAlert = false;
 $showError = false;
 $exists = false;
 
+
     // Check if the form is submitted
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        // Prepare SQL statement to insert data into the certification table
-        $sql = "INSERT INTO certification (robotclass, partmodel, endefector, progress, certstatus) VALUES (?, ?, ?, ?, ?)";
-        $stmt = $db->prepare($sql);
-
-        // Bind parameters with form values
-        $stmt->bindParam(1, $_POST['robot_class']);
-        $stmt->bindParam(2, $_POST['part_model']);
-        $stmt->bindParam(3, $_POST['end_effector']);
-        $stmt->bindParam(4, $_POST['progress']);
-        $stmt->bindParam(5, $_POST['cert_status']);
-        
-
-        // Execute the prepared statement
-        if ($stmt->execute()) {
-            echo "Data uploaded to the database successfully!";
-        } else {
-            echo "Error uploading data to the database.";
+        if(isset($_POST['selected_user']) && !empty($_POST['selected_user'])) {
+            // Get the selected user's profile ID
+            $selected_user_profile_id = $_POST['selected_user'];
+    
+            // Prepare SQL statement to insert data into the certification table
+            $sql = "INSERT INTO certification (user_profile_id, robotclass, partmodel, progress, certstatus, dateadded, expirationdate) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            $stmt = $db->prepare($sql);
+    
+            // Bind parameters with form values
+            $stmt->bindParam(1, $selected_user_profile_id);
+            $stmt->bindParam(2, $_POST['class']);
+            $stmt->bindParam(3, $_POST['part_model']);
+            $stmt->bindParam(4, $_POST['description']);
+            $stmt->bindParam(5, $_POST['progress']);
+            $stmt->bindParam(6, $_POST['cert_status']);
+            $stmt->bindParam(7, $_POST['dateadded']);
+            $stmt->bindParam(8, $_POST['expirationdate']);
         }
     }
 ?>
+
+<!-- Search function for selecting a user -->
+<form method="post">
+        <select name="selected_user">
+            <option value="" selected disabled>Select a user</option>
+            <!-- Fetch users from the database and populate the dropdown -->
+            <?php
+            $query = "SELECT * FROM userprofile";
+            $result = mysqli_query($conn, $query);
+            while ($row = mysqli_fetch_assoc($result)) {
+                $selected = ($row['userprofileid'] == $selected_user) ? 'selected' : '';
+                echo "<option value='" . $row['userprofileid'] . "'>" . $row['lastname'] . "</option>";
+            }
+            ?>
+        </select>
+        <input type="submit" value="Select User">
+</form>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -97,38 +115,56 @@ $exists = false;
     <form method="post" action="process_form.php">
 
     <h3>Mobile Platform</h3>
-    <form method="post" action="process_form.php">
-        <table id="mobile_platform_table">
-            <thead>
-                <tr>
-                    <th>Part Model</th>
-                    <th>Progress</th>
-                    <th>Certification Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>
-                        <select name="part_model[]">
-                            <!-- Options will be dynamically populated based on selection -->
-                            <option value="Canova Platform 001">Canova Platform 001</option>
-                            <option value="Canova Platform 002">Canova Platform 002</option>
-                            <option value="Canova Platform 003">Canova Platform 003</option>
-                            <option value="Canova Platform 004">Canova Platform 004</option>
-                            <option value="Canova Platform 005">Canova Platform 005</option>
-                        </select>
-                    </td>
-                    <td>
-                        <input type="range" name="progress[]" min="0" max="100" value="50" oninput="updateProgressValue(this)">
-                        <span class="progress_value">50%</span>
-                    </td>
-                    <td><input type="text" name="cert_status[]" value="In Progress"></td>
-                </tr>
-                <!-- Additional rows will be dynamically added here -->
-            </tbody>
-        </table>
-    </form>
-    <button type="button" id="add_row1">Add Row</button>
+<form method="post">
+    <!-- Add a hidden input field to pass the user_id -->
+    <table id="mobile_platform_table">
+        <thead>
+            <tr>
+                <th>Part Model</th>
+                <th>Robot Class</th>
+                <th>Description</th>
+                <th>Progress</th>
+                <th>Certification Status</th>
+                <th>Certification Added Date</th>
+                <th>Certification Expiration Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <select name="part_model[]">
+                        <!-- Options will be dynamically populated based on selection -->
+                        <option value="Canova Platform 001">Canova Platform 001</option>
+                        <option value="Canova Platform 002">Canova Platform 002</option>
+                        <option value="Canova Platform 003">Canova Platform 003</option>
+                        <option value="Canova Platform 004">Canova Platform 004</option>
+                        <option value="Canova Platform 005">Canova Platform 005</option>
+                    </select>
+                </td>
+                <td>
+                    <input type="text" name="class[]" value="mobile platform">
+                </td>
+                <td>
+                    <input type="text" name="description[]" value="part description">
+                </td>
+                <td>
+                    <input type="range" name="progress[]" min="0" max="100" value="50" oninput="updateProgressValue(this)">
+                    <span class="progress_value">50%</span>
+                </td>
+                <td><input type="text" name="cert_status[]" value="In Progress"></td>
+                <td>
+                    <input type="date" name="dateadded[]" value="2021-01-01">
+                </td>
+                <td>
+                    <input type="date" name="expirationdate[]" value="2022-01-01">
+                </td>
+            </tr>
+            <!-- Additional rows will be dynamically added here -->
+        </tbody>
+    </table>
+    <!-- Move the submit button inside the form -->
+    <button type="submit" class="submit">Submit</button>
+</form>
 
     <!-- Robotic Arm Table -->
     <h3>Robotic Arm</h3>
@@ -137,14 +173,18 @@ $exists = false;
             <thead>
                 <tr>
                     <th>Part Model</th>
+                    <th>Robot Class</th>
+                    <th>Description</th>
                     <th>Progress</th>
                     <th>Certification Status</th>
+                    <th>Certification Added Date</th>
+                    <th>Certification Expiration Date</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
                     <td>
-                        <select name="part_modelArm[]" onchange="populateEndEffectorDropdown(this)">
+                        <select name="part_model[]" onchange="populateEndEffectorDropdown(this)">
                             <!-- Options will be dynamically populated based on selection -->
                             <option value="Canova Arm 001">Canova Arm 001</option>
                             <option value="Canova Arm 002">Canova Arm 002</option>
@@ -154,16 +194,28 @@ $exists = false;
                         </select>
                     </td>
                     <td>
+                        <input type="text" name="class[]" value="robotic arm">
+                    </td>
+                    <td>
+                        <input type="text" name="description[]" value="part description">
+                    </td>
+                    <td>
                         <input type="range" name="progress[]" min="0" max="100" value="50" oninput="updateProgressValue(this)">
                         <span class="progress_value">50%</span>
                     </td>
                     <td><input type="text" name="cert_status[]" value="In Progress"></td>
-                </tr>
-                <!-- Additional rows will be dynamically added here -->
+                    <td>
+                        <input type="date" name="dateadded[]" value="2021-01-01">
+                    </td>
+                    <td>
+                        <input type="date" name="expirationdate[]" value="2022-01-01">
+                    </td>
+                    </tr>
             </tbody>
         </table>
+        <button type="submit" class="submit">Submit</button>
     </form>
-    <button type="button" id="add_row2">Add Row</button>
+
 
     <!-- VR Table -->
     <h3>VR</h3>
@@ -171,15 +223,19 @@ $exists = false;
         <table id="vr_table">
             <thead>
                 <tr>
-                    <th>Part Model</th>
+                <th>Part Model</th>
+                <th>Robot Class</th>
+                    <th>Description</th>
                     <th>Progress</th>
                     <th>Certification Status</th>
+                    <th>Certification Added Date</th>
+                    <th>Certification Expiration Date</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
                     <td>
-                        <select name="part_modelvr[]">
+                        <select name="part_model[]">
                             <!-- Options will be dynamically populated based on selection -->
                             <option value="Canova VR 001">Canova VR 001</option>
                             <option value="Canova VR 002">Canova VR 002</option>
@@ -189,16 +245,28 @@ $exists = false;
                         </select>
                     </td>
                     <td>
-                        <input type="range" name="progress[]" min="0" max="100" value="50" oninput="updateProgressValue(this)">
-                        <span class="progress_value">50%</span>
+                        <input type="text" name="class[]" value="vr">
                     </td>
-                    <td><input type="text" name="cert_status[]" value="In Progress"></td>
+                    <td>
+                    <input type="text" name="description[]" value="part description">
+                </td>
+                <td>
+                    <input type="range" name="progress[]" min="0" max="100" value="50" oninput="updateProgressValue(this)">
+                    <span class="progress_value">50%</span>
+                </td>
+                <td><input type="text" name="cert_status[]" value="In Progress"></td>
+                <td>
+                    <input type="date" name="dateadded[]" value="2021-01-01">
+                </td>
+                <td>
+                    <input type="date" name="expirationdate[]" value="2022-01-01">
+                </td>
                 </tr>
                 <!-- Additional rows will be dynamically added here -->
             </tbody>
         </table>
     </form>
-    <button type="button" id="add_row3">Add Row</button>
+    <button type="submit" class="submit">Submit</button>
 </form>
 
 <!-- VR Table -->
@@ -207,15 +275,19 @@ $exists = false;
         <table id="effector_table">
             <thead>
                 <tr>
-                    <th>Part Model</th>
+                <th>Part Model</th>
+                <th>Robot Class</th>
+                    <th>Description</th>
                     <th>Progress</th>
                     <th>Certification Status</th>
+                    <th>Certification Added Date</th>
+                    <th>Certification Expiration Date</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
                     <td>
-                        <select name="part_modelendeffector[]">
+                        <select name="part_model[]">
                             <!-- Options will be dynamically populated based on selection -->
                             <option value="Claw">Claw</option>
                             <option value="Cutter">Cutter</option>
@@ -223,102 +295,31 @@ $exists = false;
                         </select>
                     </td>
                     <td>
-                        <input type="range" name="progress[]" min="0" max="100" value="50" oninput="updateProgressValue(this)">
-                        <span class="progress_value">50%</span>
+                        <input type="text" name="class[]" value="end effector">
                     </td>
-                    <td><input type="text" name="cert_status[]" value="In Progress"></td>
+                    <td>
+                        <input type="text" name="description[]" value="part description">
+                </td>
+                <td>
+                    <input type="range" name="progress[]" min="0" max="100" value="50" oninput="updateProgressValue(this)">
+                    <span class="progress_value">50%</span>
+                </td>
+                <td><input type="text" name="cert_status[]" value="In Progress"></td>
+                <td>
+                    <input type="date" name="dateadded[]" value="2021-01-01">
+                </td>
+                <td>
+                    <input type="date" name="expirationdate[]" value="2022-01-01">
+                </td>
                 </tr>
                 <!-- Additional rows will be dynamically added here -->
             </tbody>
         </table>
     </form>
-    <button type="button" id="add_row4">Add Row</button>
     <button type="submit" class="submit">Submit</button>
 </form>
 
 <script>
-    // Event listener for Add Row button click to dynamically add rows
-    document.getElementById("add_row1").addEventListener("click", function() {
-        var table = document.getElementById("mobile_platform_table").getElementsByTagName('tbody')[0];
-        var newRow = table.insertRow(table.rows.length);
-        var cell1 = newRow.insertCell(0);
-        var cell2 = newRow.insertCell(1);
-        var cell3 = newRow.insertCell(2);
-
-        cell1.innerHTML = `
-            <select name="part_model[]">
-            <!-- Options will be dynamically populated based on selection -->
-            <option value="Canova Platform 001">Canova Platform 001</option>
-            <option value="Canova Platform 002">Canova Platform 002</option>
-            <option value="Canova Platform 003">Canova Platform 003</option>
-            <option value="Canova Platform 004">Canova Platform 004</option>
-            <option value="Canova Platform 005">Canova Platform 005</option>
-            </select>`;
-        cell2.innerHTML = '<input type="range" name="progress[]" min="0" max="100" value="0" oninput="updateProgressValue(this)"><span class="progress_value">0%</span>';
-        cell3.innerHTML = '<input type="text" name="cert_status[]" value="">';
-    });
-
-    // Event listener for Add Row button click to dynamically add rows
-    document.getElementById("add_row2").addEventListener("click", function() {
-        var table = document.getElementById("robotic_arm_table").getElementsByTagName('tbody')[0];
-        var newRow = table.insertRow(table.rows.length);
-        var cell1 = newRow.insertCell(0);
-        var cell2 = newRow.insertCell(1);
-        var cell3 = newRow.insertCell(2);
-        var cell3 = newRow.insertCell(3);
-
-        cell1.innerHTML = `
-            <select name="part_modelArm[]">
-            <option value="Canova Arm 001">Canova Arm 001</option>
-            <option value="Canova Arm 002">Canova Arm 002</option>
-            <option value="Canova Arm 003">Canova Arm 003</option>
-            <option value="Canova Arm 004">Canova Arm 004</option>
-            <option value="Canova Arm 005">Canova Arm 005</option>
-            </select>`;
-        cell3.innerHTML = '<input type="range" name="progress[]" min="0" max="100" value="0" oninput="updateProgressValue(this)"><span class="progress_value">0%</span>';
-        cell4.innerHTML = '<input type="text" name="cert_status[]" value="">';
-    });
-
-        // Event listener for Add Row button click to dynamically add rows
-        document.getElementById("add_row3").addEventListener("click", function() {
-        var table = document.getElementById("vr_table").getElementsByTagName('tbody')[0];
-        var newRow = table.insertRow(table.rows.length);
-        var cell1 = newRow.insertCell(0);
-        var cell2 = newRow.insertCell(1);
-        var cell3 = newRow.insertCell(2);
-
-
-        cell1.innerHTML = `
-            <select name="part_modelvr[]">
-            <option value="Canova VR 001">Canova VR 001</option>
-            <option value="Canova VR 002">Canova VR 002</option>
-            <option value="Canova VR 003">Canova VR 003</option>
-            <option value="Canova VR 004">Canova VR 004</option>
-            <option value="Canova VR 005">Canova VR 005</option>
-            </select>`;
-        cell2.innerHTML = '<input type="range" name="progress[]" min="0" max="100" value="0" oninput="updateProgressValue(this)"><span class="progress_value">0%</span>';
-        cell3.innerHTML = '<input type="text" name="cert_status[]" value="">';
-    });
-
-    // Event listener for Add Row button click to dynamically add rows
-    document.getElementById("add_row4").addEventListener("click", function() {
-        var table = document.getElementById("effector_table").getElementsByTagName('tbody')[0];
-        var newRow = table.insertRow(table.rows.length);
-        var cell1 = newRow.insertCell(0);
-        var cell2 = newRow.insertCell(1);
-        var cell3 = newRow.insertCell(2);
-
-        cell1.innerHTML = `
-            <select name="part_modelendeffector[]">
-            <!-- Options will be dynamically populated based on selection -->
-            <option value="Claw">Claw</option>
-            <option value="Cutter">Cutter</option>
-            <option value="Hand">Hand</option>
-            </select>`;
-        cell2.innerHTML = '<input type="range" name="progress[]" min="0" max="100" value="0" oninput="updateProgressValue(this)"><span class="progress_value">0%</span>';
-        cell3.innerHTML = '<input type="text" name="cert_status[]" value="">';
-    });
-
     // Bind the updateProgressValue function to existing progress sliders
     var existingSliders = document.querySelectorAll('input[type="range"]');
     existingSliders.forEach(function(slider) {updateProgressValue(slider);

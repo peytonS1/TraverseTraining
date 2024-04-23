@@ -2,6 +2,7 @@
 // Include the database connection
 require 'db.php';
 
+
 // Check if a user is selected
 if(isset($_POST['selected_user'])) {
     $_SESSION['selected_user'] = $_POST['selected_user']; // Save selected user's ID in session
@@ -46,15 +47,16 @@ if(isset($_POST['search'])) {
 </form>
 <div id="searchResults"></div>
 
+
 <style>
     /* CSS for highlighting on hover */
     /* CSS for Search Results */
     #searchResults {
         margin-top: 10px;
-        width: 200px; /* Adjust the width as needed */
-        height: 100px; /* Adjust the height as needed */
-        padding: 5px; /* Adjust the padding as needed */
-        margin: 1px; /* Adjust the margin as needed */
+        width: 200px; 
+        height: 100px; 
+        padding: 5px; 
+        margin: 1px; 
      }
     .user {
         padding: 5px;
@@ -101,13 +103,16 @@ table {
     <!-- Display user's certification information -->
     <?php if ($is_admin && isset($selected_user)): ?>
         <!-- Table for administrator -->
-        <table id="adminTable" style="display: none;">
+        <table id="adminTable">
             <thead>
                 <tr>
                     <th>Certification Type</th>
-                    <th>Progress</th>
+                    <th>Progress %</th>
                     <th>Description</th>
                     <th>Certification Status</th>
+                    <th>Certification Added Date</th>
+                    <th>Certification Expiration Date</th>
+                    <th>Edit</th>
                 </tr>
             </thead>
             <tbody>
@@ -121,20 +126,26 @@ table {
                     echo "<td>" . $row['progress'] . "</td>";
                     echo "<td>" . $row['description'] . "</td>";
                     echo "<td>" . $row['certstatus'] . "</td>";
+                    echo "<td>" . $row['dateadded'] . "</td>";
+                    echo "<td>" . $row['expirationdate'] . "</td>";
+                    echo "<td><a href='editCertification.php?user_id=" . $row['userprofileid'] . "&cert_id=" . $row['cert_id'] . "'>Edit</a></td>";
                     echo "</tr>";
                 }
                 ?>
             </tbody>
         </table>
-    <?php else: ?>
+        
+        <?php else: ?>
         <!-- Uneditable table for normal users -->
         <table id="certificationTable">
             <thead>
                 <tr>
                     <th>Certification Type</th>
-                    <th>Progress</th>
+                    <th>Progress %</th>
                     <th>Description</th>
                     <th>Certification Status</th>
+                    <th>Certification Added Date</th>
+                    <th>Certification Expiration Date</th>
                 </tr>
             </thead>
             <tbody>
@@ -150,17 +161,13 @@ table {
                     echo "<td>" . $row['progress'] . "</td>";
                     echo "<td>" . $row['description'] . "</td>";
                     echo "<td>" . $row['certstatus'] . "</td>";
+                    echo "<td>" . $row['dateadded'] . "</td>";
+                    echo "<td>" . $row['expirationdate'] . "</td>";
                     echo "</tr>";
                 }
-
                 ?>
             </tbody>
         </table>
-    <?php endif; ?>
-
-    <!-- Button to go to Certification.php page to edit user's certification info -->
-    <?php if ($is_admin): ?>
-        <button onclick="window.location.href='certification.php?user_id=<?php echo $selected_user; ?>'">Edit Certification Info</button>
     <?php endif; ?>
 
     <script>
@@ -183,6 +190,9 @@ table {
                             '<td>' + cert.progress + '</td>' +
                             '<td>' + cert.description + '</td>' +
                             '<td>' + cert.certstatus + '</td>' +
+                            '<td>' + cert.dateadded + '</td>' +
+                            '<td>' + cert.expirationdate + '</td>' +
+                            '<td><a href="editCertification.php?user_id=' + cert.userprofileid + '&cert_id=' + cert.certid +'">Edit</a></td>'+ // Edit button with user ID as parameter
                             '</tr>'
                         );
                     });
@@ -192,11 +202,49 @@ table {
             });
         }
 
+        function populateAddTable(userIdAdd) {
+            $.ajax({
+                url: 'fetch_user_data.php', // Update with your PHP script to fetch user data
+                method: 'POST',
+                data: { user_id: userIdAdd },
+                dataType: 'json',
+                success: function(response) {
+                    // Clear existing table rows
+                    $('#addTable tbody').empty();
+                    // Populate table with user data
+                    response.forEach(function(cert) {
+                        $('#addTable tbody').append(
+                            '<tr>' +
+                            '<td><a href="Certification.php?user_id=' + cert.userprofileid + '">Edit</a></td>'+ // Edit button with user ID as parameter
+                            '</tr>'
+                        );
+                    });
+                    // Show the admin table
+                    $('#addTable').show();
+                }
+            });
+        }
+
         // Click event for user rows
         $(document).on('click', '.user', function() {
             var userId = $(this).data('userid');
-            populateAdminTable(userId);
+            // Save selected user's ID in session
+            $.ajax({
+                url: 'save_selected_user.php', // Update with the appropriate PHP script to save selected user in session
+                method: 'POST',
+                data: { admin_selected_user: userId },
+                success: function(response) {
+                    // If session saved successfully, populate admin table
+                    populateAdminTable(userId);
+                    alert("You have selected the user: " + userId);
+                },
+                error: function(xhr, status, error) {
+                    // Handle errors if needed
+                    console.error(error);
+                }
+            });
         });
+
 
         // Search function
         $('#search').on('input', function(){
@@ -215,7 +263,6 @@ table {
                 }
             });
         });
-
     });
 
     $(document).ready(function(){
@@ -237,6 +284,8 @@ table {
                             '<td>' + cert.progress + '</td>' +
                             '<td>' + cert.description + '</td>' +
                             '<td>' + cert.certstatus + '</td>' +
+                            '<td>' + cert.dateadded + '</td>' +
+                            '<td>' + cert.expirationdate + '</td>' +
                             '</tr>'
                         );
                     });
@@ -246,6 +295,7 @@ table {
             });
         }
     });
+
     </script>
 </body>
 </html>
