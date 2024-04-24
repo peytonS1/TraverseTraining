@@ -1,4 +1,5 @@
 <?php
+session_start();
 // Database credentials
 $host = 'localhost';
 $dbname = 'traininglog';
