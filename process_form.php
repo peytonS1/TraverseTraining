@@ -1,5 +1,5 @@
 <?php
-
+require 'db.php';
 // Retrieve form data
 $user_profile_id = isset($_POST['user_profile_id']) ? $_POST['user_profile_id'] : '';
 $class = isset($_POST['class']) ? $_POST['class'] : '';
