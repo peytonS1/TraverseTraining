@@ -48,6 +48,13 @@ $exists = false;
         <input type="submit" value="Select User">
 </form>
 
+<style>
+        body {
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+</style>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -110,12 +117,12 @@ $exists = false;
             margin-top: 20px;
         }
     </style>
-<body style = background-color:White>
+    <body style = background-color:White>
     <h2 class="centerTop">Certification</h2>
     <form method="post" action="process_form.php">
 
     <h3>Mobile Platform</h3>
-<form method="post">
+    <form method="post" action="process_form.php">
     <!-- Add a hidden input field to pass the user_id -->
     <table id="mobile_platform_table">
         <thead>
@@ -132,7 +139,7 @@ $exists = false;
         <tbody>
             <tr>
                 <td>
-                    <select name="part_model[]">
+                    <select name="part_model">
                         <!-- Options will be dynamically populated based on selection -->
                         <option value="Canova Platform 001">Canova Platform 001</option>
                         <option value="Canova Platform 002">Canova Platform 002</option>
@@ -142,21 +149,23 @@ $exists = false;
                     </select>
                 </td>
                 <td>
-                    <input type="text" name="class[]" value="mobile platform">
+                    <input type="text" name="class" value="mobile platform">
                 </td>
                 <td>
-                    <input type="text" name="description[]" value="part description">
+                    <input type="text" name="description" value="part description">
                 </td>
                 <td>
-                    <input type="range" name="progress[]" min="0" max="100" value="50" oninput="updateProgressValue(this)">
+                    <input type="range" name="progress" min="0" max="100" value="50" oninput="updateProgressValue(this)">
                     <span class="progress_value">50%</span>
                 </td>
-                <td><input type="text" name="cert_status[]" value="In Progress"></td>
                 <td>
-                    <input type="date" name="dateadded[]" value="2021-01-01">
+                    <input type="text" name="cert_status" value="In Progress">
                 </td>
                 <td>
-                    <input type="date" name="expirationdate[]" value="2022-01-01">
+                    <input type="date" name="dateadded" value="2021-01-01">
+                </td>
+                <td>
+                    <input type="date" name="expirationdate" value="2022-01-01">
                 </td>
             </tr>
             <!-- Additional rows will be dynamically added here -->
@@ -164,11 +173,9 @@ $exists = false;
     </table>
     <!-- Move the submit button inside the form -->
     <button type="submit" class="submit">Submit</button>
-</form>
 
     <!-- Robotic Arm Table -->
     <h3>Robotic Arm</h3>
-    <form method="post" action="process_form.php">
         <table id="robotic_arm_table">
             <thead>
                 <tr>
@@ -184,7 +191,7 @@ $exists = false;
             <tbody>
                 <tr>
                     <td>
-                        <select name="part_model[]" onchange="populateEndEffectorDropdown(this)">
+                        <select name="part_model" onchange="populateEndEffectorDropdown(this)">
                             <!-- Options will be dynamically populated based on selection -->
                             <option value="Canova Arm 001">Canova Arm 001</option>
                             <option value="Canova Arm 002">Canova Arm 002</option>
@@ -194,32 +201,30 @@ $exists = false;
                         </select>
                     </td>
                     <td>
-                        <input type="text" name="class[]" value="robotic arm">
+                        <input type="text" name="class" value="robotic arm">
                     </td>
                     <td>
-                        <input type="text" name="description[]" value="part description">
+                        <input type="text" name="description" value="part description">
                     </td>
                     <td>
-                        <input type="range" name="progress[]" min="0" max="100" value="50" oninput="updateProgressValue(this)">
+                        <input type="range" name="progress" min="0" max="100" value="50" oninput="updateProgressValue(this)">
                         <span class="progress_value">50%</span>
                     </td>
-                    <td><input type="text" name="cert_status[]" value="In Progress"></td>
+                    <td><input type="text" name="cert_status" value="In Progress"></td>
                     <td>
-                        <input type="date" name="dateadded[]" value="2021-01-01">
+                        <input type="date" name="dateadded" value="2021-01-01">
                     </td>
                     <td>
-                        <input type="date" name="expirationdate[]" value="2022-01-01">
+                        <input type="date" name="expirationdate" value="2022-01-01">
                     </td>
                     </tr>
             </tbody>
         </table>
         <button type="submit" class="submit">Submit</button>
-    </form>
 
 
     <!-- VR Table -->
     <h3>VR</h3>
-    <form method="post" action="process_form.php">
         <table id="vr_table">
             <thead>
                 <tr>
@@ -235,7 +240,7 @@ $exists = false;
             <tbody>
                 <tr>
                     <td>
-                        <select name="part_model[]">
+                        <select name="part_model">
                             <!-- Options will be dynamically populated based on selection -->
                             <option value="Canova VR 001">Canova VR 001</option>
                             <option value="Canova VR 002">Canova VR 002</option>
@@ -245,33 +250,30 @@ $exists = false;
                         </select>
                     </td>
                     <td>
-                        <input type="text" name="class[]" value="vr">
+                        <input type="text" name="class" value="vr">
                     </td>
                     <td>
-                    <input type="text" name="description[]" value="part description">
+                    <input type="text" name="description" value="part description">
                 </td>
                 <td>
-                    <input type="range" name="progress[]" min="0" max="100" value="50" oninput="updateProgressValue(this)">
+                    <input type="range" name="progress" min="0" max="100" value="50" oninput="updateProgressValue(this)">
                     <span class="progress_value">50%</span>
                 </td>
-                <td><input type="text" name="cert_status[]" value="In Progress"></td>
+                <td><input type="text" name="cert_status" value="In Progress"></td>
                 <td>
-                    <input type="date" name="dateadded[]" value="2021-01-01">
+                    <input type="date" name="dateadded" value="2021-01-01">
                 </td>
                 <td>
-                    <input type="date" name="expirationdate[]" value="2022-01-01">
+                    <input type="date" name="expirationdate" value="2022-01-01">
                 </td>
                 </tr>
                 <!-- Additional rows will be dynamically added here -->
             </tbody>
         </table>
-    </form>
     <button type="submit" class="submit">Submit</button>
-</form>
 
 <!-- VR Table -->
-<h3>End Effector</h3>
-    <form method="post" action="process_form.php">
+    <h3>End Effector</h3>
         <table id="effector_table">
             <thead>
                 <tr>
@@ -287,7 +289,7 @@ $exists = false;
             <tbody>
                 <tr>
                     <td>
-                        <select name="part_model[]">
+                        <select name="part_model">
                             <!-- Options will be dynamically populated based on selection -->
                             <option value="Claw">Claw</option>
                             <option value="Cutter">Cutter</option>
@@ -295,21 +297,21 @@ $exists = false;
                         </select>
                     </td>
                     <td>
-                        <input type="text" name="class[]" value="end effector">
+                        <input type="text" name="class" value="end effector">
                     </td>
                     <td>
-                        <input type="text" name="description[]" value="part description">
+                        <input type="text" name="description" value="part description">
                 </td>
                 <td>
-                    <input type="range" name="progress[]" min="0" max="100" value="50" oninput="updateProgressValue(this)">
+                    <input type="range" name="progress" min="0" max="100" value="50" oninput="updateProgressValue(this)">
                     <span class="progress_value">50%</span>
                 </td>
-                <td><input type="text" name="cert_status[]" value="In Progress"></td>
+                <td><input type="text" name="cert_status" value="In Progress"></td>
                 <td>
-                    <input type="date" name="dateadded[]" value="2021-01-01">
+                    <input type="date" name="dateadded" value="2021-01-01">
                 </td>
                 <td>
-                    <input type="date" name="expirationdate[]" value="2022-01-01">
+                    <input type="date" name="expirationdate" value="2022-01-01">
                 </td>
                 </tr>
                 <!-- Additional rows will be dynamically added here -->

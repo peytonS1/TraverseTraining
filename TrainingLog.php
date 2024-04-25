@@ -134,6 +134,7 @@ table {
                 ?>
             </tbody>
         </table>
+        <a href="addCertification.php" class="button">Add Certification</a>
         
         <?php else: ?>
         <!-- Uneditable table for normal users -->

@@ -34,7 +34,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $selected_user = mysqli_real_escape_string($conn, $_POST['selected_user']);
         
         // Store the selected user in a session variable to use it in dashboard.php
-        session_start(); // Start the session
         $_SESSION['selected_user'] = $selected_user;
 
                 // Check if the selected user is the admin

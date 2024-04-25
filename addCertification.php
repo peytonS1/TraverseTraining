@@ -2,99 +2,211 @@
 // Include the database connection
 require 'db.php';
 
-// Check if the 'certid' and 'user_id' are provided as parameters
-if(isset($_GET['user_id'])) {
-    $user_id = $_GET['user_id'];
+// Fetch users from the database
+$query = "SELECT userprofileid, lastname FROM userprofile";
+$result = mysqli_query($conn, $query);
 
-    // Fetch certification information from the database based on the 'certid' and 'user_id'
-    $query = "SELECT * FROM certification WHERE certid = userprofileid = $user_id";
-    $result = mysqli_query($conn, $query);
+// Display the form to select a user
+echo '<form method="post">';
+echo '<select name="selected_user">';
+echo '<option value="" selected disabled>Select a user</option>';
+while ($row = mysqli_fetch_assoc($result)) {
+    echo '<option value="' . $row['userprofileid'] . '">' . $row['lastname'] . '</option>';
+}
+echo '</select>';
+echo '<input type="submit" value="Select User">';
+echo '</form>';
 
-    if(mysqli_num_rows($result) > 0) {
-        $certification = mysqli_fetch_assoc($result);
-        // Extract certification details
-        $robotclass = $certification['robotclass'];
-        $progress = $certification['progress'];
-        $description = $certification['description'];
-        $certstatus = $certification['certstatus'];
-        $dateadded = $certification['dateadded'];
-        $expirationdate = $certification['expirationdate'];
-    } else {
-        // If no certification found for the user with the specified 'certid', redirect back to TrainingLog.php or display an error message
-        header("Location: TrainingLog.php");
-        exit;
-    }
-} 
+// Handle form submissions for each certification table
+if(isset($_POST['selected_user'])) {
+    $user_id = $_POST['selected_user'];
 
-// Start the session
-session_start();
+    // Form for Mobile Platform table
+    echo '<form method="post" style="margin-bottom: 20px; border: 1px solid #ccc; padding: 10px; border-radius: 5px;">';
+    echo '<label for="mobile_platform_part_model">Part Model:</label>';
+    echo '<select name="mobile_platform_part_model">';
+    echo '<option value="Canova Platform 001">Canova Platform 001</option>';
+    echo '<option value="Canova Platform 002">Canova Platform 002</option>';
+    echo '<option value="Canova Platform 003">Canova Platform 003</option>';
+    echo '<option value="Canova Platform 004">Canova Platform 004</option>';
+    echo '<option value="Canova Platform 005">Canova Platform 005</option>';
+    echo '</select>';
 
-// Check if the admin user is logged in
-if(!isset($_SESSION['selected_user'])) {
-    // If not logged in, redirect to the login page or display an error message
-    header("Location: login.php");
-    exit;
+    echo '<label for="robot_class">Robot Class:</label>';
+    echo '<input type="text" name="robot_class">';
+
+    echo '<label for="description">Description:</label>';
+    echo '<input type="text" name="description">';
+
+    echo '<label for="progress">Progress Percent:</label>';
+    echo '<input type="text" name="progress"';
+
+    echo '<label for="cert_status">Certification Status:</label>';
+    echo '<select name="cert_status">';
+    echo '<option value="In Progress">In Progress</option>';
+    echo '<option value="Complete">Complete</option>';
+    echo '</select>';
+
+    // Add input fields for Robot Class, Description, Progress, Certification Status, Certification Added Date, Certification Expiration Date
+    echo '<input type="hidden" name="user_id" value="' . $user_id . '">';
+    echo '<input type="submit" name="submit_mobile_platform" value="Submit">';
+    echo '</form>';
+
+    // Form for Robotic Arm table
+    echo '<form method="post" style="margin-bottom: 20px; border: 1px solid #ccc; padding: 10px; border-radius: 5px;">';
+    echo '<label for="robotic_arm_part_model">Part Model:</label>';
+    echo '<select name="robotic_arm_part_model">';
+    echo '<option value="Canova Arm 001">Canova Arm 001</option>';
+    echo '<option value="Canova Arm 002">Canova Arm 002</option>';
+    echo '<option value="Canova Arm 003">Canova Arm 003</option>';
+    echo '<option value="Canova Arm 004">Canova Arm 004</option>';
+    echo '<option value="Canova Arm 005">Canova Arm 005</option>';
+    echo '</select>';
+
+    echo '<label for="robot_class">Robot Class:</label>';
+    echo '<input type="text" name="robot_class">';
+
+    echo '<label for="description">Description:</label>';
+    echo '<input type="text" name="description">';
+
+    echo '<label for="progress">Progress Percent:</label>';
+    echo '<input type="text" name="progress"';
+
+    echo '<label for="cert_status">Certification Status:</label>';
+    echo '<select name="cert_status">';
+    echo '<option value="In Progress">In Progress</option>';
+    echo '<option value="Complete">Complete</option>';
+    echo '</select>';
+
+    echo '<input type="hidden" name="user_id" value="' . $user_id . '">';
+    echo '<input type="submit" name="submit_robotic_arm" value="Submit">';
+    echo '</form>';
+
+    // Form for VR table
+    echo '<form method="post" style="margin-bottom: 20px; border: 1px solid #ccc; padding: 10px; border-radius: 5px;">';
+    echo '<label for="vr_part_model">Part Model:</label>';
+    echo '<select name="vr_part_model">';
+    echo '<option value="Canova VR 001">Canova VR 001</option>';
+    echo '<option value="Canova VR 002">Canova VR 002</option>';
+    echo '<option value="Canova VR 003">Canova VR 003</option>';
+    echo '<option value="Canova VR 004">Canova VR 004</option>';
+    echo '<option value="Canova VR 005">Canova VR 005</option>';
+    echo '</select>';
+
+    echo '<label for="robot_class">Robot Class:</label>';
+    echo '<input type="text" name="robot_class">';
+
+    echo '<label for="description">Description:</label>';
+    echo '<input type="text" name="description">';
+
+    echo '<label for="progress">Progress Percent:</label>';
+    echo '<input type="text" name="progress">';
+
+    echo '<label for="cert_status">Certification Status:</label>';
+    echo '<select name="cert_status">';
+    echo '<option value="In Progress">In Progress</option>';
+    echo '<option value="Complete">Complete</option>';
+    echo '</select>';
+
+    echo '<input type="hidden" name="user_id" value="' . $user_id . '">';
+    echo '<input type="submit" name="submit_vr" value="Submit">';
+    echo '</form>';
+
+    // Form for End Effector table
+    echo '<form method="post" style="margin-bottom: 20px; border: 1px solid #ccc; padding: 10px; border-radius: 5px;">';
+    echo '<label for="end_effector_part_model">Part Model:</label>';
+    echo '<select name="end_effector_part_model">';
+    echo '<option value="Claw">Claw</option>';
+    echo '<option value="Hand">Hand</option>';
+    echo '<option value="Cutter">Cutter</option>';
+    echo '</select>';
+
+    echo '<label for="robot_class">Robot Class:</label>';
+    echo '<input type="text" name="robot_class">';
+
+    echo '<label for="description">Description:</label>';
+    echo '<input type="text" name="description">';
+
+    echo '<label for="progress">Progress Percent:</label>';
+    echo '<input type="text" name="progress">';
+
+    echo '<label for="cert_status">Certification Status:</label>';
+    echo '<select name="cert_status">';
+    echo '<option value="In Progress">In Progress</option>';
+    echo '<option value="Complete">Complete</option>';
+    echo '</select>';
+
+    echo '<input type="hidden" name="user_id" value="' . $user_id . '">';
+    echo '<input type="submit" name="submit_end_effector" value="Submit">';
+    echo '</form>';
 }
 
-// Handle form submission to update certification information
-if($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Retrieve and sanitize form data
-    $progress = mysqli_real_escape_string($conn, $_POST['progress']);
-    $description = mysqli_real_escape_string($conn, $_POST['description']);
-    $certstatus = mysqli_real_escape_string($conn, $_POST['certstatus']);
-    $dateadded = mysqli_real_escape_string($conn, $_POST['dateadded']);
-    $expirationdate = mysqli_real_escape_string($conn, $_POST['expirationdate']);
+// Handle form submissions for each certification table
+if(isset($_POST['submit_mobile_platform'])) {
+    // Process form submission for Mobile Platform table
+    $user_id = $_POST['user_id'];
+    $part_model = $_POST['mobile_platform_part_model'];
+    $robot_class = $_POST['robot_class'];
+    $description = $_POST['description'];
+    $progress = $_POST['progress'];
+    $cert_status = $_POST['cert_status'];
 
-    // Update the database with the edited certification information
-    $update_query = "UPDATE certification SET progress = '$progress', description = '$description', certstatus = '$certstatus', dateadded = '$dateadded', expirationdate = '$expirationdate' WHERE certid = $cert_id";
 
-    if(mysqli_query($conn, $update_query)) {
-        // If update successful, redirect back to TrainingLog.php or display a success message
-        header("Location: TrainingLog.php");
-        exit;
+    // Retrieve other form fields and perform database insertion for Mobile Platform table
+    $query = "INSERT INTO certification (userprofileid, partmodel, robotclass, description, progress, certstatus) 
+    VALUES ('$user_id', '$part_model', '$robot_class', '$description', '$progress', '$cert_status')";
+
+    // Check if insertion was successful
+    if(mysqli_query($conn, $query)) {
+        // Alert if database insertion was successful
+        echo '<script>alert("Database has been updated.");</script>';
     } else {
-        // If update fails, display an error message
-        $error_message = "Failed to update certification information.";
+        // Alert if there was an error in database insertion
+        echo '<script>alert("Error updating database.");</script>';
     }
 }
+
+if(isset($_POST['submit_robotic_arm'])) {
+    // Process form submission for Robotic Arm table
+    $user_id = $_POST['user_id'];
+    $part_model = $_POST['robotic_arm_part_model'];
+    $robot_class = $_POST['robot_class'];
+    $description = $_POST['description'];
+    $progress = $_POST['progress'];
+    $cert_status = $_POST['cert_status'];
+
+    // Retrieve other form fields and perform database insertion for Robotic Arm table
+    $query = "INSERT INTO certification (user_id, part_model, robot_class, description, progress, cert_status) 
+    VALUES ('$user_id', '$part_model', '$robot_class', '$description', '$progress', '$cert_status')";
+}
+
+if(isset($_POST['submit_vr'])) {
+    // Process form submission for VR table
+    $user_id = $_POST['user_id'];
+    $part_model = $_POST['vr_part_model'];
+    $robot_class = $_POST['robot_class'];
+    $description = $_POST['description'];
+    $progress = $_POST['progress'];
+    $cert_status = $_POST['cert_status'];
+
+    // Retrieve other form fields and perform database insertion for VR table
+    $query = "INSERT INTO certification (user_id, part_model, robot_class, description, progress, cert_status) 
+    VALUES ('$user_id', '$part_model', '$robot_class', '$description', '$progress', '$cert_status')";
+}
+
+if(isset($_POST['submit_end_effector'])) {
+    // Process form submission for End Effector table
+    $user_id = $_POST['user_id'];
+    $part_model = $_POST['end_effector_part_model'];
+    $robot_class = $_POST['robot_class'];
+    $description = $_POST['description'];
+    $progress = $_POST['progress'];
+    $cert_status = $_POST['cert_status'];
+
+    // Retrieve other form fields and perform database insertion for End Effector table
+    $query = "INSERT INTO certification (user_id, part_model, robot_class, description, progress, cert_status) 
+    VALUES ('$user_id', '$part_model', '$robot_class', '$description', '$progress', '$cert_status')";
+}
+
+// Implement submission handling for VR and End Effector tables similarly
 ?>
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Certification</title>
-</head>
-<body>
-    <h2>Edit Certification</h2>
-    <!-- Display error message if any -->
-    <?php if(isset($error_message)): ?>
-        <p><?php echo $error_message; ?></p>
-    <?php endif; ?>
-    
-    <!-- Form to edit certification details -->
-    <form method="post">
-        <!-- Input fields to edit certification details -->
-        <label for="robotclass">Robot Class:</label><br>
-        <input type="text" id="robotclass" name="robotclass" value="<?php echo $robotclass; ?>"><br><br>
-
-        <label for="progress">Progress %:</label><br>
-        <input type="text" id="progress" name="progress" value="<?php echo $progress; ?>"><br><br>
-
-        <label for="description">Description:</label><br>
-        <textarea id="description" name="description"><?php echo $description; ?></textarea><br><br>
-
-        <label for="certstatus">Certification Status:</label><br>
-        <input type="text" id="certstatus" name="certstatus" value="<?php echo $certstatus; ?>"><br><br>
-
-        <label for="dateadded">Date added: (year/month/day)</label><br>
-        <input type="text" id="dateadded" name="dateadded" value="<?php echo $dateadded; ?>"><br><br>
-
-        <label for="expirationdate">Expiration Date: (year/month/day)</label><br>
-        <input type="text" id="expirationdate" name="expirationdate" value="<?php echo $expirationdate; ?>"><br><br>
-
-        <input type="submit" value="Save">
-    </form>
-</body>
-</html>

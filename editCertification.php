@@ -27,8 +27,6 @@ if(isset($_GET['cert_id']) && isset($_GET['user_id'])) {
     }
 } 
 
-// Start the session
-session_start();
 
 // Check if the admin user is logged in
 if(!isset($_SESSION['selected_user'])) {
