@@ -237,7 +237,7 @@ table {
                 success: function(response) {
                     // If session saved successfully, populate admin table
                     populateAdminTable(userId);
-                    alert("You have selected the user: " + userId);
+                    alert("You have selected the user: " + lastname);
                 },
                 error: function(xhr, status, error) {
                     // Handle errors if needed

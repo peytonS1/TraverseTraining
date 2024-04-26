@@ -31,25 +31,32 @@ if(isset($_POST['selected_user'])) {
     echo '<option value="Canova Platform 004">Canova Platform 004</option>';
     echo '<option value="Canova Platform 005">Canova Platform 005</option>';
     echo '</select>';
+    echo ' ';
 
     echo '<label for="robot_class">Robot Class:</label>';
     echo '<input type="text" name="robot_class">';
+    echo ' ';
 
     echo '<label for="description">Description:</label>';
     echo '<input type="text" name="description">';
+    echo ' ';
 
     echo '<label for="progress">Progress Percent:</label>';
     echo '<input type="text" name="progress"';
+    echo ' ';
 
     echo '<label for="cert_status">Certification Status:</label>';
     echo '<select name="cert_status">';
+    echo ' ';
+
     echo '<option value="In Progress">In Progress</option>';
     echo '<option value="Complete">Complete</option>';
     echo '</select>';
+    echo ' ';
 
     // Add input fields for Robot Class, Description, Progress, Certification Status, Certification Added Date, Certification Expiration Date
     echo '<input type="hidden" name="user_id" value="' . $user_id . '">';
-    echo '<input type="submit" name="submit_mobile_platform" value="Submit">';
+    echo '<input type="submit" name="submit_mobile_platform" value="Submit" style="background-color: #4CAF50; color: white; border: none; cursor: pointer;">';
     echo '</form>';
 
     // Form for Robotic Arm table
@@ -62,24 +69,31 @@ if(isset($_POST['selected_user'])) {
     echo '<option value="Canova Arm 004">Canova Arm 004</option>';
     echo '<option value="Canova Arm 005">Canova Arm 005</option>';
     echo '</select>';
+    echo ' ';
 
     echo '<label for="robot_class">Robot Class:</label>';
     echo '<input type="text" name="robot_class">';
+    echo ' ';
 
     echo '<label for="description">Description:</label>';
     echo '<input type="text" name="description">';
+    echo ' ';
 
     echo '<label for="progress">Progress Percent:</label>';
     echo '<input type="text" name="progress"';
+    echo ' ';
 
     echo '<label for="cert_status">Certification Status:</label>';
     echo '<select name="cert_status">';
+    echo ' ';
+
     echo '<option value="In Progress">In Progress</option>';
     echo '<option value="Complete">Complete</option>';
     echo '</select>';
+    echo ' ';
 
     echo '<input type="hidden" name="user_id" value="' . $user_id . '">';
-    echo '<input type="submit" name="submit_robotic_arm" value="Submit">';
+    echo '<input type="submit" name="submit_robotic_arm" value="Submit" style="background-color: #4CAF50; color: white; border: none; cursor: pointer;">';
     echo '</form>';
 
     // Form for VR table
@@ -92,24 +106,31 @@ if(isset($_POST['selected_user'])) {
     echo '<option value="Canova VR 004">Canova VR 004</option>';
     echo '<option value="Canova VR 005">Canova VR 005</option>';
     echo '</select>';
+    echo ' ';
 
     echo '<label for="robot_class">Robot Class:</label>';
     echo '<input type="text" name="robot_class">';
+    echo ' ';
 
     echo '<label for="description">Description:</label>';
     echo '<input type="text" name="description">';
+    echo ' ';
 
     echo '<label for="progress">Progress Percent:</label>';
     echo '<input type="text" name="progress">';
+    echo ' ';
 
     echo '<label for="cert_status">Certification Status:</label>';
     echo '<select name="cert_status">';
+    echo ' ';
+
     echo '<option value="In Progress">In Progress</option>';
     echo '<option value="Complete">Complete</option>';
     echo '</select>';
+    echo ' ';
 
     echo '<input type="hidden" name="user_id" value="' . $user_id . '">';
-    echo '<input type="submit" name="submit_vr" value="Submit">';
+    echo '<input type="submit" name="submit_vr" value="Submit" style="background-color: #4CAF50; color: white; border: none; cursor: pointer;">';
     echo '</form>';
 
     // Form for End Effector table
@@ -120,26 +141,38 @@ if(isset($_POST['selected_user'])) {
     echo '<option value="Hand">Hand</option>';
     echo '<option value="Cutter">Cutter</option>';
     echo '</select>';
+    echo ' ';
 
     echo '<label for="robot_class">Robot Class:</label>';
     echo '<input type="text" name="robot_class">';
+    echo ' ';
 
     echo '<label for="description">Description:</label>';
     echo '<input type="text" name="description">';
+    echo ' ';
 
     echo '<label for="progress">Progress Percent:</label>';
     echo '<input type="text" name="progress">';
+    echo ' ';
 
     echo '<label for="cert_status">Certification Status:</label>';
     echo '<select name="cert_status">';
+    echo ' ';
+
     echo '<option value="In Progress">In Progress</option>';
     echo '<option value="Complete">Complete</option>';
     echo '</select>';
+    echo ' ';
 
-    echo '<input type="hidden" name="user_id" value="' . $user_id . '">';
-    echo '<input type="submit" name="submit_end_effector" value="Submit">';
+    echo '<input type="hidden" name="user_id" value="' . $user_id . '" >';
+    echo '<input type="submit" name="submit_end_effector" value="Submit" style="background-color: #4CAF50; color: white; border: none; cursor: pointer;">';
     echo '</form>';
 }
+
+// Button to go to TrainingLog.php
+echo '<form action="TrainingLog.php" method="get">';
+echo '<input type="submit" value="Go back to Training Log" style="padding: 5px 10px; background-color: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer;">';
+echo '</form>';
 
 // Handle form submissions for each certification table
 if(isset($_POST['submit_mobile_platform'])) {
@@ -176,8 +209,17 @@ if(isset($_POST['submit_robotic_arm'])) {
     $cert_status = $_POST['cert_status'];
 
     // Retrieve other form fields and perform database insertion for Robotic Arm table
-    $query = "INSERT INTO certification (user_id, part_model, robot_class, description, progress, cert_status) 
+    $query = "INSERT INTO certification (userprofileid, partmodel, robotclass, description, progress, certstatus) 
     VALUES ('$user_id', '$part_model', '$robot_class', '$description', '$progress', '$cert_status')";
+
+    // Check if insertion was successful
+    if(mysqli_query($conn, $query)) {
+        // Alert if database insertion was successful
+        echo '<script>alert("Database has been updated.");</script>';
+    } else {
+        // Alert if there was an error in database insertion
+        echo '<script>alert("Error updating database.");</script>';
+    }
 }
 
 if(isset($_POST['submit_vr'])) {
@@ -190,8 +232,17 @@ if(isset($_POST['submit_vr'])) {
     $cert_status = $_POST['cert_status'];
 
     // Retrieve other form fields and perform database insertion for VR table
-    $query = "INSERT INTO certification (user_id, part_model, robot_class, description, progress, cert_status) 
+    $query = "INSERT INTO certification (userprofileid, partmodel, robotclass, description, progress, certstatus) 
     VALUES ('$user_id', '$part_model', '$robot_class', '$description', '$progress', '$cert_status')";
+
+    // Check if insertion was successful
+    if(mysqli_query($conn, $query)) {
+        // Alert if database insertion was successful
+        echo '<script>alert("Database has been updated.");</script>';
+    } else {
+        // Alert if there was an error in database insertion
+        echo '<script>alert("Error updating database.");</script>';
+    }
 }
 
 if(isset($_POST['submit_end_effector'])) {
@@ -204,8 +255,17 @@ if(isset($_POST['submit_end_effector'])) {
     $cert_status = $_POST['cert_status'];
 
     // Retrieve other form fields and perform database insertion for End Effector table
-    $query = "INSERT INTO certification (user_id, part_model, robot_class, description, progress, cert_status) 
+    $query = "INSERT INTO certification (userprofileid, partmodel, robotclass, description, progress, certstatus) 
     VALUES ('$user_id', '$part_model', '$robot_class', '$description', '$progress', '$cert_status')";
+
+    // Check if insertion was successful
+    if(mysqli_query($conn, $query)) {
+        // Alert if database insertion was successful
+        echo '<script>alert("Database has been updated.");</script>';
+    } else {
+        // Alert if there was an error in database insertion
+        echo '<script>alert("Error updating database.");</script>';
+    }
 }
 
 // Implement submission handling for VR and End Effector tables similarly

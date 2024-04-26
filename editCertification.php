@@ -57,7 +57,60 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
-
+<style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        form {
+            margin-top: 20px;
+        }
+        label {
+            font-weight: bold;
+        }
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        textarea {
+            height: 100px;
+        }
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+        .error-message {
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -94,6 +147,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
         <input type="text" id="expirationdate" name="expirationdate" value="<?php echo $expirationdate; ?>"><br><br>
 
         <input type="submit" value="Save">
+        <input type="submit" value="Cancel" onclick="window.location.href='TrainingLog.php'">
     </form>
 </body>
 </html>
