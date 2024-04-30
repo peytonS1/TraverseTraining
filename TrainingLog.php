@@ -205,7 +205,7 @@ table {
 
         function populateAddTable(userIdAdd) {
             $.ajax({
-                url: 'fetch_user_data.php', // Update with your PHP script to fetch user data
+                url: 'fetch_user_data.php', // to fetch user data
                 method: 'POST',
                 data: { user_id: userIdAdd },
                 dataType: 'json',
@@ -231,7 +231,7 @@ table {
             var userId = $(this).data('userid');
             // Save selected user's ID in session
             $.ajax({
-                url: 'save_selected_user.php', // Update with the appropriate PHP script to save selected user in session
+                url: 'save_selected_user.php', //to save selected user in session
                 method: 'POST',
                 data: { admin_selected_user: userId },
                 success: function(response) {
@@ -270,7 +270,7 @@ table {
         // Function to populate the user table with user data
         function populateUserTable(userId) {
             $.ajax({
-                url: 'fetch_user_data.php', // Update with your PHP script to fetch user data
+                url: 'fetch_user_data.php', // to fetch user data
                 method: 'POST',
                 data: { user_id: userId },
                 dataType: 'json',
